@@ -7,13 +7,13 @@
 
 #---------------------
 import sys
-import ConfigParser
+import configparser
 
 
 class Config:
     def __init__(self, path):
         self.path = path
-        self.cf = ConfigParser.ConfigParser()
+        self.cf = configparser.ConfigParser()
         self.cf.read(self.path)
 
     def get(self, field, key):
@@ -34,17 +34,18 @@ class Config:
 
 
 def read_config(config_file_path, field, key):
-    cf = ConfigParser.ConfigParser()
+    cf = configparser.ConfigParser()
     try:
         cf.read(config_file_path)
         result = cf.get(field, key)
     except:
-        sys.exit(1)
+        print('No {key} of {field} in {config_file_path} '.format(key=key,field=field,config_file_path=config_file_path))
+        sys.exit('Reading failed.')
     return result
 
 
 def write_config(config_file_path, field, key, value):
-    cf = ConfigParser.ConfigParser()
+    cf = configparser.ConfigParser()
     try:
         cf.read(config_file_path)
         cf.set(field, key, value)
@@ -55,13 +56,18 @@ def write_config(config_file_path, field, key, value):
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        sys.exit(1)
+        print('\
+        Please input enough parameters: \n \
+        Read: FILE_PATH FIELD KEY \n \
+        Write: FILE_PATH FIELD KEY VALUE \n \
+        ')
+        sys.exit(0)
 
     config_file_path = sys.argv[1]
     field = sys.argv[2]
     key = sys.argv[3]
     if len(sys.argv) == 4:
-        print read_config(config_file_path, field, key)
+        print( read_config(config_file_path, field, key))
     else:
         value = sys.argv[4]
         write_config(config_file_path, field, key, value)
